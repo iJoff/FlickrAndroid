@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.lifecycle.Observer
 import com.miniprojet.flickrandroid.R
+import com.bumptech.glide.Glide
 
 class MainFragment : Fragment() {
 
