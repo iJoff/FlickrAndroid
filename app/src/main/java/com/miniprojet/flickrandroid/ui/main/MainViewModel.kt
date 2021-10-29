@@ -11,19 +11,14 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class MainViewModel : ViewModel() {
-    val repository = Repository()
     val photoaffichee = MutableLiveData<Photo>()
     var listephotos = listOf<Photo>()
     var numPhoto: Int = 0
 
     init {
-        repository.getPhotos(
-            // Cf. classe Repository pour plus d'informations
-            object : Callback<SearchResult> {
-                override fun onResponse(
-                    call: Call<SearchResult>,
-                    response: Response<SearchResult>
-                ) {
+        val repository = Repository()
+        repository.getPhotos(object : Callback<SearchResult> {
+                override fun onResponse(call: Call<SearchResult>, response: Response<SearchResult>) {
                     // On accède à la réponse via response.body
                     // Un objet SearchResult inclut un objet photos de classe Photos
                     // Un objet Photos inclut un objet photo de classe List<Photo>
@@ -54,5 +49,6 @@ class MainViewModel : ViewModel() {
             numPhoto += 1
         }
 
+        photoaffichee.value = listephotos[numPhoto]
     }
 }

@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import com.miniprojet.flickrandroid.R
 import com.bumptech.glide.Glide
@@ -25,21 +27,29 @@ class MainFragment : Fragment() {
     ): View {
         val layout = inflater.inflate(R.layout.main_fragment, container, false)
 
+        // On crée le ViewModelProvider
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
         // On récupère l'image du layout
         // Si findViewById est utilisé dans un fragment, il faut écrire layout. devant
         // car il s'agit d'une méthode d'une Activity
-        val imageview = layout.findViewById<ImageView>(R.id.imagePreview)
-
-        // On crée le ViewModelProvider
-        val model = ViewModelProvider(this).get(MainViewModel::class.java)
 
         // On observe le LiveData photoaffichee
-        model.photoaffichee.observe(this, Observer { photo ->
+        viewModel.photoaffichee.observe(viewLifecycleOwner, Observer { photo ->
             // Ici on modifie l'URL associée à l'image observée lorsqu'il y a un changement
-            val url = "https://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id+"_"+photo.secret + ".jpg"
-            Glide.with(getActivity()).load(url).into(imageview)
-        })
+            val url = "https://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg"
 
+            val imageTitle = layout.findViewById<TextView>(R.id.imageTitle)
+            imageTitle.text = photo.title
+
+            val imageView = layout.findViewById<ImageView>(R.id.imagePreview)
+            val nextButton = layout.findViewById<Button>(R.id.nextButton)
+            val allImagesButton = layout.findViewById<Button>(R.id.allImagesButton)
+
+            // Schéma : Glide.with(fragment).load(url).into(imageView);
+            // Ici le fragment choisi est notre layout
+            Glide.with(layout).load(url).into(imageView)
+        })
         return layout
     }
 
