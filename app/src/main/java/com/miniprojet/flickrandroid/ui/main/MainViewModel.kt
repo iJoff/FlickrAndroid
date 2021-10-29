@@ -24,6 +24,7 @@ class MainViewModel : ViewModel() {
                     // Un objet Photos inclut un objet photo de classe List<Photo>
                     // Cet objet photo correspond à la liste des photos récupérée sur le serveur
 
+                    Log.v("Success", "Success on the repository loading")
                     val listephotostemporaire = response.body()?.photos?.photo
 
                     // La liste peut être nulle, il faut donc vérifier qu'elle ne le soit pas
@@ -35,8 +36,7 @@ class MainViewModel : ViewModel() {
                 }
 
                 override fun onFailure(call: Call<SearchResult>, t: Throwable) {
-                    // log.v ne fonctionne pas ici, je ne sais pas pourquoi
-                    print("Erreur")
+                    Log.v("Error", "Failure on the repository loading")
                 }
             }
         )
