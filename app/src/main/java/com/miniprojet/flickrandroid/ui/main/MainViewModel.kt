@@ -19,19 +19,22 @@ class MainViewModel : ViewModel() {
         val repository = Repository()
         repository.getPhotos(object : Callback<SearchResult> {
                 override fun onResponse(call: Call<SearchResult>, response: Response<SearchResult>) {
-                    // On accède à la réponse via response.body
+                    // On accède à la réponse via response.body de classe SearchResult
                     // Un objet SearchResult inclut un objet photos de classe Photos
                     // Un objet Photos inclut un objet photo de classe List<Photo>
                     // Cet objet photo correspond à la liste des photos récupérée sur le serveur
 
                     Log.v("Success", "Success on the repository loading")
+
+                    // Si elle existe, la liste des photos est récupérées
+                    // Attention : "photo" est bien une liste de photos, non une photo
                     val listephotostemporaire = response.body()?.photos?.photo
 
                     // La liste peut être nulle, il faut donc vérifier qu'elle ne le soit pas
                     if (listephotostemporaire != null) {
                         // Comme il s'agit d'un init, on affecte directement la première photo
                         listephotos = listephotostemporaire
-                        photoaffichee.value = listephotostemporaire[0]
+                        photoaffichee.value = listephotostemporaire[numPhoto]
                     }
                 }
 
@@ -43,7 +46,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun nextPhoto() {
-        if (numPhoto == listephotos.size) {
+        if (numPhoto == listephotos.size - 1) {
             numPhoto = 0
         } else {
             numPhoto += 1

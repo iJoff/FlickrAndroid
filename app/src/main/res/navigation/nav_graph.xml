@@ -13,10 +13,29 @@
         <action
             android:id="@+id/versListeFragment"
             app:destination="@id/listFragment" />
+        <action
+            android:id="@+id/mainVersFull"
+            app:destination="@id/fullFragment" />
     </fragment>
     <fragment
         android:id="@+id/listFragment"
         android:name="com.miniprojet.flickrandroid.ui.liste.ListFragment"
         android:label="list_fragment"
-        tools:layout="@layout/list_fragment" />
+        tools:layout="@layout/list_fragment" >
+        <action
+            android:id="@+id/listVersFull"
+            app:destination="@id/fullFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fullFragment"
+        android:name="com.miniprojet.flickrandroid.ui.full.FullFragment"
+        android:label="full_fragment"
+        tools:layout="@layout/full_fragment" >
+        <argument
+            android:name="url"
+            app:argType="string" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+    </fragment>
 </navigation>

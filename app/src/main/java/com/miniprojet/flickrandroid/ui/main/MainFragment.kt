@@ -10,8 +10,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import com.miniprojet.flickrandroid.R
 import com.bumptech.glide.Glide
+import com.miniprojet.flickrandroid.ui.liste.ListFragmentDirections
 
 class MainFragment : Fragment() {
 
@@ -27,29 +29,47 @@ class MainFragment : Fragment() {
     ): View {
         val layout = inflater.inflate(R.layout.main_fragment, container, false)
 
-        // On crée le ViewModelProvider
+        // On crée le ViewModelProvider (syntaxe plus légère que celle des TD)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        // On récupère l'image du layout
+        // On récupère les boutons et l'image du layout
         // Si findViewById est utilisé dans un fragment, il faut écrire layout. devant
         // car il s'agit d'une méthode d'une Activity
+        val imageTitle = layout.findViewById<TextView>(R.id.imageTitle)
+        val imageView = layout.findViewById<ImageView>(R.id.imagePreview)
+        val nextButton = layout.findViewById<Button>(R.id.nextButton)
+        val allImagesButton = layout.findViewById<Button>(R.id.allImagesButton)
 
         // On observe le LiveData photoaffichee
         viewModel.photoaffichee.observe(viewLifecycleOwner, Observer { photo ->
             // Ici on modifie l'URL associée à l'image observée lorsqu'il y a un changement
             val url = "https://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg"
 
-            val imageTitle = layout.findViewById<TextView>(R.id.imageTitle)
+            // Afficher le titre de l'image sur la TextView "imageTitle"
             imageTitle.text = photo.title
-
-            val imageView = layout.findViewById<ImageView>(R.id.imagePreview)
-            val nextButton = layout.findViewById<Button>(R.id.nextButton)
-            val allImagesButton = layout.findViewById<Button>(R.id.allImagesButton)
+            getActivity()?.setTitle("Flickr - " + photo.title)
 
             // Schéma : Glide.with(fragment).load(url).into(imageView);
             // Ici le fragment choisi est notre layout
             Glide.with(layout).load(url).into(imageView)
+
+            // Le clic sur "allImagesButton" doit renvoyer vers ListFragment
+            allImagesButton.setOnClickListener {
+                Navigation.findNavController(layout).navigate(R.id.versListeFragment)
+            }
+
+            // Le clic sur l'image doit l'afficher en plein écran
+            imageView.setOnClickListener {
+                val action = MainFragmentDirections.mainVersFull(url, photo.title)
+                Navigation.findNavController(layout).navigate(action)
+            }
+
+            // Le clic sur "Next" doit afficher l'image suivante
+            nextButton.setOnClickListener {
+                viewModel.nextPhoto()
+            }
         })
+
         return layout
     }
 
